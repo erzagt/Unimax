@@ -1,0 +1,133 @@
+@import "tailwindcss";
+
+/*
+ * Дизайн-токены UniPath.
+ * Все цвета, шрифты, радиусы, тени и отступы задаются здесь.
+ * В компонентах используем только утилиты на основе этих токенов.
+ */
+@theme {
+  /* Цвета: почти монохром */
+  --color-canvas: #f5f4f0; /* фон страницы */
+  --color-surface: #ffffff; /* белые карточки */
+  --color-ink: #121211; /* основной текст, чёрные кнопки */
+  --color-ink-soft: #2b2a28; /* hover чёрных кнопок */
+  --color-muted: #5c5b57; /* вторичный текст — контраст 6.1:1 на canvas */
+  --color-subtle: #8a8984; /* только декоративные элементы, не для текста */
+  --color-line: #e3e1db; /* тонкие рамки */
+  --color-line-strong: #cbc8c0; /* рамки кнопок/полей */
+  --color-danger: #a8321f; /* ошибки форм — контраст 6.4:1 */
+
+  /* Пастельные акценты направлений — только в маленьких иконках */
+  --color-sat: #ece7ff;
+  --color-sat-ink: #5a46c8;
+  --color-ielts: #e9f5d3;
+  --color-ielts-ink: #4a7413;
+  --color-ec: #ffe8d9;
+  --color-ec-ink: #b0501a;
+  --color-essay: #e1edfa;
+  --color-essay-ink: #2c66a3;
+
+  /* Шрифты (переменные задаются next/font в layout.tsx) */
+  --font-serif: var(--font-playfair), "Times New Roman", serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* Радиусы */
+  --radius-tile: 1rem;
+  --radius-card: 1.75rem;
+  --radius-panel: 2.25rem;
+
+  /* Тени */
+  --shadow-soft: 0 1px 2px rgb(18 18 17 / 0.04), 0 12px 32px -14px rgb(18 18 17 / 0.14);
+  --shadow-float: 0 2px 6px rgb(18 18 17 / 0.05), 0 28px 56px -22px rgb(18 18 17 / 0.28);
+  --shadow-inset: inset 0 1px 0 rgb(255 255 255 / 0.9);
+
+  /* Отступы секций */
+  --spacing-section: 5rem;
+  --spacing-section-lg: 7.5rem;
+  --spacing-gutter: 1rem;
+
+  /* Анимации */
+  --animate-spin-slow: spin 22s linear infinite;
+  --animate-float: float 7s ease-in-out infinite;
+
+  @keyframes float {
+    0%,
+    100% {
+      translate: 0 0;
+    }
+    50% {
+      translate: 0 -8px;
+    }
+  }
+}
+
+/* Стеклянная карточка (glassmorphism) */
+@utility glass {
+  background: linear-gradient(
+    145deg,
+    rgb(255 255 255 / 0.78) 0%,
+    rgb(255 255 255 / 0.42) 100%
+  );
+  border: 1px solid rgb(255 255 255 / 0.85);
+  box-shadow: var(--shadow-inset), var(--shadow-float);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+}
+
+/* Скрытие полосы прокрутки у горизонтальных лент */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: var(--color-ink);
+    color: var(--color-canvas);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
+  }
+
+  [id] {
+    scroll-margin-top: 6rem;
+  }
+
+  /* Мягче размытие на телефонах — дешевле для слабых устройств */
+  @media (max-width: 1023px) {
+    .glass {
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
