@@ -71,7 +71,7 @@ const plain = (title: string) => title.replace(/-\n/g, "").replace(/\n/g, " ");
 const BLANK = 27;
 const MARGIN = 7;
 /** Средняя ширина символа Inter (полужирный) в долях кегля. */
-const CHAR = 0.62;
+const CHAR = 0.65;
 
 function PieceLabel({ r, c, label }: { r: number; c: number; label: { title: string; sub?: string } }) {
   // Выемки слева/справа «съедают» место — сдвигаем и при необходимости уменьшаем текст
@@ -90,10 +90,10 @@ function PieceLabel({ r, c, label }: { r: number; c: number; label: { title: str
     const size = fit(21);
     return (
       <g textAnchor="middle" fill="var(--color-canvas)">
-        <text x={cx} y={cy + 1} fontSize={size} fontWeight={600} letterSpacing="-0.01em">
+        <text x={cx} y={cy + 1} fontSize={size} fontWeight={700} letterSpacing="-0.01em">
           {label.title}
         </text>
-        <text x={cx} y={cy + 18} fontSize={11.5} opacity={0.8} className="max-lg:hidden">
+        <text x={cx} y={cy + 18} fontSize={11.5} fontWeight={500} opacity={0.85} className="max-lg:hidden">
           {label.sub}
         </text>
       </g>
@@ -105,7 +105,7 @@ function PieceLabel({ r, c, label }: { r: number; c: number; label: { title: str
   const firstY = cy + size * 0.36 - ((lines.length - 1) * lineHeight) / 2;
   return (
     <g textAnchor="middle" fill="var(--color-canvas)">
-      <text fontSize={size} fontWeight={600} letterSpacing="-0.01em">
+      <text fontSize={size} fontWeight={700} letterSpacing="-0.01em">
         {lines.map((line, i) => (
           <tspan key={i} x={cx} y={firstY + i * lineHeight}>
             {line}
@@ -194,7 +194,7 @@ export function AdmissionPuzzle({ className }: { className?: string }) {
               textAnchor="middle"
               fontSize={25}
               fontStyle="italic"
-              fontWeight={500}
+              fontWeight={600}
               fill="var(--color-ink)"
               className="font-serif"
             >
