@@ -63,7 +63,8 @@ export function Button(props: ButtonProps) {
   if (props.href !== undefined) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { variant: _v, size: _s, icon: _i, iconLeft: _il, className: _c, children: _ch, href, ...rest } = props;
-    const isExternal = /^(https?:|mailto:|tel:)/.test(href);
+    // Внешние ссылки и скачивание файлов — обычный <a> (без prefetch от <Link>)
+    const isExternal = /^(https?:|mailto:|tel:)/.test(href) || rest.download !== undefined;
     if (isExternal) {
       return (
         <a href={href} className={classes} {...rest}>

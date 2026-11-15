@@ -129,12 +129,20 @@ NEXT_PUBLIC_SITE_URL=
 | # | Этап | Статус |
 |---|---|---|
 | 0 | CLAUDE.md, план, уточняющие вопросы | готово |
-| 1 | Дизайн-токены, базовые компоненты, лендинг `/` | готово, ждёт «ок» |
-| 2 | Заявки (Supabase `leads`) + `/admin` для заявок | — |
+| 1 | Дизайн-токены, базовые компоненты, лендинг `/` | готово |
+| 2 | Заявки (Supabase `leads`) + `/admin` для заявок | в работе: код готов, ждём проект Supabase |
 | 3 | Бесплатные инструменты: эссе (ИИ), мини-тест SAT, калькулятор шансов | — |
 | 4 | Личный кабинет ученика `/dashboard` | — |
 | 5 | Панели учителя и админа, отчёт для родителя | — |
 | 6 | Запуск: SEO, аналитика, политика, README, Lighthouse 90+ | — |
+
+## Supabase
+
+- Миграции — `supabase/migrations/*.sql`, применяются через SQL Editor (инструкция — `supabase/README.md`).
+- Клиенты: `src/lib/supabase/server.ts` (сессия пользователя, RLS), `admin.ts` (service role, только сервер), `proxy.ts` (обновление сессии в `src/proxy.ts`).
+- Проверка роли — только через `getAuth()` из `src/lib/auth.ts` (страницы, server actions, route handlers).
+- Заявки создаются только сервером: `POST /api/leads` → `insertLead()` (`src/lib/leads.ts`). Инструменты этапа 3 используют тот же путь с `source`.
+- Rate limit — `rateLimit()` из `src/lib/rate-limit.ts` (Postgres-функция `rate_limit_hit`).
 
 ## Команды
 
