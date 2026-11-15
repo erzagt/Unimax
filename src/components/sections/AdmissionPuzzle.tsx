@@ -101,13 +101,15 @@ function PieceLabel({
   const fit = (base: number) => Math.min(base, avail / (longest * CHAR));
 
   if (label.sub) {
-    const size = fit(21);
+    // Подпись под названием («оценки», «проект») — крупная и видна на всех экранах
+    const size = fit(20);
+    const subSize = Math.min(14.5, avail / (label.sub.length * CHAR));
     return (
       <g textAnchor="middle" fill={color}>
-        <text x={cx} y={cy + 1} fontSize={size} fontWeight={700} letterSpacing="-0.01em">
+        <text x={cx} y={cy - 1} fontSize={size} fontWeight={700} letterSpacing="-0.01em">
           {label.title}
         </text>
-        <text x={cx} y={cy + 18} fontSize={11.5} fontWeight={500} opacity={0.85} className="max-lg:hidden">
+        <text x={cx} y={cy + 17} fontSize={subSize} fontWeight={600} opacity={0.9}>
           {label.sub}
         </text>
       </g>
