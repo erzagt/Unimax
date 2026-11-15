@@ -1,35 +1,11 @@
-import Image from "next/image";
 import { ArrowRight, Play } from "lucide-react";
 import { site } from "@content/site";
-import { directions } from "@content/directions";
-import type { Direction } from "@content/types";
-import { AvatarStack, Button, Container, GlassCard, Heading, IconTile } from "@/components/ui";
+import { AvatarStack, Button, Container, Heading, IconTile } from "@/components/ui";
 import { ContentIcon, SparkStar } from "@/components/icons";
 import { cn } from "@/lib/utils";
+import { AdmissionPuzzle } from "./AdmissionPuzzle";
 
 const { hero } = site;
-
-/** Положение стеклянных карточек кольца вокруг фото (десктоп). */
-const ringLayout: Record<Direction["id"], { className: string; delay: string }> = {
-  sat: { className: "left-[17%] top-[6%] [transform:rotateY(28deg)_rotateZ(-4deg)]", delay: "[animation-delay:0s]" },
-  ielts: { className: "left-[5%] top-[27%] [transform:rotateY(34deg)_rotateZ(3deg)]", delay: "[animation-delay:-2s]" },
-  ec: { className: "right-[15%] top-[9%] [transform:rotateY(-30deg)_rotateZ(4deg)]", delay: "[animation-delay:-4s]" },
-  essay: { className: "right-[4%] top-[31%] [transform:rotateY(-36deg)_rotateZ(-3deg)]", delay: "[animation-delay:-1s]" },
-};
-
-function RingCard({ direction, className }: { direction: Direction; className?: string }) {
-  return (
-    <GlassCard padding="none" className={cn("flex w-48 items-center gap-3 rounded-[1.25rem] p-3.5", className)}>
-      <IconTile tone={direction.id} size="sm">
-        <ContentIcon name={direction.icon} />
-      </IconTile>
-      <div className="min-w-0">
-        <p className="text-[15px] font-semibold leading-tight text-ink">{direction.heroLabel}</p>
-        <p className="mt-0.5 text-xs text-muted">{direction.goal}</p>
-      </div>
-    </GlassCard>
-  );
-}
 
 function RotatingBadge({ className }: { className?: string }) {
   return (
@@ -130,50 +106,20 @@ export function Hero() {
           </div>
         </div>
 
-        {/* Сцена: фото + кольцо карточек */}
-        <div className="relative mx-auto mt-10 h-[380px] max-w-[820px] sm:h-[480px] lg:mt-2 lg:h-[600px]">
-          {/* Эллипс кольца */}
-          <div
-            aria-hidden="true"
-            className="absolute top-[17%] left-1/2 hidden h-[30%] w-[94%] -translate-x-1/2 rounded-[50%] border border-white/80 bg-gradient-to-b from-white/30 to-white/0 shadow-[inset_0_-12px_30px_rgb(255_255_255/0.5)] lg:block"
-          />
-
-          <Image
-            src="/hero.png"
-            alt="Ученик UniPath (заглушка фото)"
-            width={900}
-            height={860}
-            fetchPriority="high"
-            loading="eager"
-            sizes="(min-width: 1024px) 630px, (min-width: 640px) 500px, 400px"
-            className="absolute bottom-0 left-1/2 h-full w-auto max-w-none -translate-x-1/2 object-contain object-bottom"
-          />
-
-          {/* Кольцо стеклянных карточек (десктоп) */}
-          <div className="absolute inset-0 hidden [perspective:1100px] lg:block">
-            <ul aria-label="Направления подготовки" className="contents">
-              {/* Декоративные плитки для глубины */}
-              <li aria-hidden="true" className="glass absolute top-[19%] left-[-3%] h-40 w-20 rounded-[1.25rem] opacity-80 [transform:rotateY(58deg)]" />
-              <li aria-hidden="true" className="glass absolute top-[25%] right-[-2%] h-36 w-20 rounded-[1.25rem] opacity-80 [transform:rotateY(-58deg)]" />
-              {directions.map((d) => (
-                <li key={d.id} className={cn("absolute", ringLayout[d.id].className)}>
-                  <div className={cn("animate-float motion-reduce:animate-none", ringLayout[d.id].delay)}>
-                    <RingCard direction={d} />
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
+        {/* Сцена: пазл поступления */}
+        <div className="relative mx-auto mt-8 max-w-[640px] pb-10 lg:mt-4 lg:pb-20">
+          {/* На телефоне пазл шире экрана: поле деталей занимает всю ширину, края с выпавшими деталями обрезаются */}
+          <AdmissionPuzzle className="relative left-1/2 w-[130vw] max-w-none -translate-x-1/2 sm:static sm:w-full sm:translate-x-0" />
 
           {/* Нижние подписи (десктоп) */}
-          <div className="absolute bottom-10 left-[-18%] hidden xl:block">
+          <div className="absolute bottom-16 left-[-38%] hidden xl:block">
             <span aria-hidden="true" className="mb-4 block h-px w-8 bg-line-strong" />
             <p className="text-[15px] leading-snug text-muted">
               <span className="font-semibold text-ink">{hero.studentsCount}</span> {hero.studentsLabel}
             </p>
             <AvatarStack count={4} className="mt-4" />
           </div>
-          <div className="absolute right-[-18%] bottom-14 hidden xl:block">
+          <div className="absolute right-[-38%] bottom-20 hidden xl:block">
             <SparkStar className="mb-6 ml-10 size-6 text-ink" />
             <div className="flex items-start gap-4">
               <span aria-hidden="true" className="mt-3 block h-px w-8 bg-line-strong" />
@@ -187,23 +133,9 @@ export function Hero() {
         </div>
       </Container>
 
-      {/* Мобильная версия кольца: горизонтальный скролл */}
-      <div className="relative z-10 -mt-24 lg:hidden">
-        <ul
-          aria-label="Направления подготовки"
-          className="scrollbar-none flex snap-x snap-mandatory gap-3 overflow-x-auto px-gutter pb-6 sm:px-6"
-        >
-          {directions.map((d) => (
-            <li key={d.id} className="snap-start">
-              <RingCard direction={d} className="w-44" />
-            </li>
-          ))}
-        </ul>
-      </div>
-
       {/* Нижние подписи для экранов уже 1280px */}
       <div className="relative z-10 xl:hidden">
-        <Container className="flex flex-col gap-6 pb-4 sm:flex-row sm:items-center sm:justify-between lg:pt-8">
+        <Container className="flex flex-col gap-6 pb-4 sm:flex-row sm:items-center sm:justify-between sm:pt-6">
           <div className="flex items-center gap-4">
             <AvatarStack count={4} />
             <p className="text-sm leading-snug text-muted">

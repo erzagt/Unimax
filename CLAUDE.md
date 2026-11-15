@@ -38,7 +38,7 @@
 │  ├─ packages.ts
 │  ├─ mentors.ts
 │  └─ faq.ts
-├─ public/                   # hero.png, фото наставников, favicon, og-image
+├─ public/                   # фото наставников, og-image
 ├─ supabase/
 │  ├─ migrations/            # SQL-миграции (таблицы, RLS-политики, функции)
 │  └─ seed.sql               # оригинальные вопросы SAT и т.п.
@@ -84,6 +84,7 @@
 - Все токены (цвета, шрифты, отступы, радиусы, тени) — в `globals.css` / конфиге Tailwind. **Хардкод цветов и размеров в компонентах запрещён.**
 - Базовые компоненты (`src/components/ui`): `Button` (капсула; с `href` — ссылка), `Card`, `GlassCard`, `Badge`, `IconTile` (пастельная иконка), `Input`, `Textarea`, `Select`, `Checkbox`, `Section`, `Container`, `Heading` (serif + курсив), `Accordion` (на `<details>`), `AvatarStack`, `Reveal` (анимация появления).
 - Пастельные тона направлений: `sat`, `ielts`, `ec`, `essay` (утилиты `bg-sat`, `text-sat-ink` и т.д.).
+- Hero: «пазл поступления» — SVG (`AdmissionPuzzle.tsx`, геометрия в `src/lib/puzzle.ts`). Подписи деталей — `content/site.ts → hero.puzzle`.
 - Страницы собираются **только** из базовых компонентов `src/components/ui`. Нужен новый вариант — расширяем компонент, а не пишем разметку с нуля.
 
 ## Правила разработки
