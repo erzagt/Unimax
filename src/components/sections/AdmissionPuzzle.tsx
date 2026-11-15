@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
  * Всё нарисовано в SVG, подписи берутся из content/site.ts.
  */
 
-const { pieces: labels, missing } = site.hero.puzzle;
+const { pieces: labels, missing, loose: looseLabels } = site.hero.puzzle;
 
 const ROWS = 6;
 const COLS = 6;
@@ -33,11 +33,15 @@ const LABEL_CELLS: [number, number][] = [
   [0, 2], [3, 0], [2, 5], [5, 2], [1, 5], [4, 0], [0, 3], [1, 0],
 ];
 
-/** Выпавшие детали вокруг пазла: клетка-образец, сдвиг, поворот, тон. */
+/**
+ * Выпавшие детали: клетка-образец (форма), сдвиг, поворот, тон.
+ * Стоят у пустых углов пазла — так они видны и на телефоне.
+ * Подписи — content/site.ts → hero.puzzle.loose (по порядку).
+ */
 const LOOSE = [
-  { r: 3, c: 0, x: -165, y: 40, rot: -24, light: true },
-  { r: 5, c: 2, x: 70, y: 140, rot: 16, light: false },
-  { r: 0, c: 4, x: 190, y: -70, rot: 12, light: true },
+  { r: 0, c: 4, x: 108, y: -58, rot: 13, light: true },
+  { r: 5, c: 2, x: 66, y: 142, rot: -12, light: false },
+  { r: 3, c: 0, x: -6, y: 232, rot: -20, light: true },
 ];
 
 /** Парящая деталь «Оффер» — форма центральной клетки. */
@@ -73,7 +77,17 @@ const MARGIN = 7;
 /** Средняя ширина символа Inter (полужирный) в долях кегля. */
 const CHAR = 0.65;
 
-function PieceLabel({ r, c, label }: { r: number; c: number; label: { title: string; sub?: string } }) {
+function PieceLabel({
+  r,
+  c,
+  label,
+  color = "var(--color-canvas)",
+}: {
+  r: number;
+  c: number;
+  label: { title: string; sub?: string };
+  color?: string;
+}) {
   // Выемки слева/справа «съедают» место — сдвигаем и при необходимости уменьшаем текст
   const leftBlank = grid.v[r][c] === 1;
   const rightBlank = grid.v[r][c + 1] === -1;
@@ -89,7 +103,7 @@ function PieceLabel({ r, c, label }: { r: number; c: number; label: { title: str
   if (label.sub) {
     const size = fit(21);
     return (
-      <g textAnchor="middle" fill="var(--color-canvas)">
+      <g textAnchor="middle" fill={color}>
         <text x={cx} y={cy + 1} fontSize={size} fontWeight={700} letterSpacing="-0.01em">
           {label.title}
         </text>
@@ -104,7 +118,7 @@ function PieceLabel({ r, c, label }: { r: number; c: number; label: { title: str
   const lineHeight = size * 1.15;
   const firstY = cy + size * 0.36 - ((lines.length - 1) * lineHeight) / 2;
   return (
-    <g textAnchor="middle" fill="var(--color-canvas)">
+    <g textAnchor="middle" fill={color}>
       <text fontSize={size} fontWeight={700} letterSpacing="-0.01em">
         {lines.map((line, i) => (
           <tspan key={i} x={cx} y={firstY + i * lineHeight}>
@@ -117,7 +131,7 @@ function PieceLabel({ r, c, label }: { r: number; c: number; label: { title: str
 }
 
 export function AdmissionPuzzle({ className }: { className?: string }) {
-  const description = `Пазл поступления: ${labels.map((l) => plain(l.title)).join(", ")}. Не хватает последней детали — «${missing}».`;
+  const description = `Пазл поступления: ${labels.map((l) => plain(l.title)).join(", ")}. Рядом — ${looseLabels.map(plain).join(", ").toLowerCase()}. Не хватает последней детали — «${missing}».`;
 
   return (
     <svg viewBox={VIEW} overflow="visible" className={cn("h-auto w-full overflow-visible font-sans", className)} role="img" aria-label={description}>
@@ -148,21 +162,6 @@ export function AdmissionPuzzle({ className }: { className?: string }) {
         ))}
       </g>
 
-      {/* Выпавшие детали */}
-      {LOOSE.map((l, i) => {
-        const cx = l.c * CELL + CELL / 2;
-        const cy = l.r * CELL + CELL / 2;
-        return (
-          <g key={i} transform={`translate(${l.x} ${l.y}) rotate(${l.rot} ${cx} ${cy})`}>
-            <path
-              d={piecePath(grid, l.r, l.c)}
-              fill={l.light ? "var(--color-subtle)" : "var(--color-ink-soft)"}
-              opacity={l.light ? 0.55 : 0.92}
-            />
-          </g>
-        );
-      })}
-
       {/* Основное поле: заливка + текстура, обрезанные по контурам деталей */}
       <g clipPath="url(#pz-clip)">
         <rect x={-PAD} y={-PAD} width={SIZE + PAD * 2} height={SIZE + PAD * 2} fill="var(--color-ink-soft)" />
@@ -179,6 +178,35 @@ export function AdmissionPuzzle({ className }: { className?: string }) {
 
       {/* Подписи */}
       {placed.map((p) => (p.label ? <PieceLabel key={`${p.r}-${p.c}`} r={p.r} c={p.c} label={p.label} /> : null))}
+
+      {/* Выпавшие детали с личными качествами */}
+      {LOOSE.map((l, i) => {
+        const cx = l.c * CELL + CELL / 2;
+        const cy = l.r * CELL + CELL / 2;
+        const title = looseLabels[i];
+        return (
+          <g key={i} transform={`translate(${l.x} ${l.y})`}>
+            <g className="animate-float motion-reduce:animate-none" style={{ animationDelay: `${-i * 2.3}s` }}>
+              <g transform={`rotate(${l.rot} ${cx} ${cy})`}>
+                <path
+                  d={piecePath(grid, l.r, l.c)}
+                  fill={l.light ? "var(--color-line-strong)" : "var(--color-ink-soft)"}
+                  stroke={l.light ? "var(--color-subtle)" : "none"}
+                  strokeWidth={1}
+                />
+                {title && (
+                  <PieceLabel
+                    r={l.r}
+                    c={l.c}
+                    label={{ title }}
+                    color={l.light ? "var(--color-ink)" : "var(--color-canvas)"}
+                  />
+                )}
+              </g>
+            </g>
+          </g>
+        );
+      })}
 
       {/* Недостающая деталь: «Оффер» */}
       <g transform={`translate(${OFFER.x} ${OFFER.y})`}>

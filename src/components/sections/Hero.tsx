@@ -109,7 +109,7 @@ export function Hero() {
         {/* Сцена: пазл поступления */}
         <div className="relative mx-auto mt-8 max-w-[640px] pb-10 lg:mt-4 lg:pb-20">
           {/* На телефоне пазл шире экрана: поле деталей занимает всю ширину, края с выпавшими деталями обрезаются */}
-          <AdmissionPuzzle className="relative left-1/2 w-[130vw] max-w-none -translate-x-1/2 sm:static sm:w-full sm:translate-x-0" />
+          <AdmissionPuzzle className="relative left-1/2 w-[120vw] max-w-none -translate-x-1/2 sm:static sm:w-full sm:translate-x-0" />
 
           {/* Нижние подписи (десктоп) */}
           <div className="absolute bottom-16 left-[-38%] hidden xl:block">
