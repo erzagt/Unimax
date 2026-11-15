@@ -15,8 +15,8 @@
 
 | Слой | Технология |
 |---|---|
-| Фреймворк | Next.js (App Router, актуальная стабильная версия) + TypeScript (strict) |
-| Стили | Tailwind CSS, дизайн-токены в CSS-переменных |
+| Фреймворк | Next.js 16 (App Router, Turbopack, `cacheComponents: true`) + TypeScript (strict) |
+| Стили | Tailwind CSS v4, дизайн-токены в `@theme` (`src/app/globals.css`) |
 | UI | Свои базовые компоненты (`src/components/ui`), иконки `lucide-react` |
 | Анимации | `motion` (бывший framer-motion), всегда с учётом `prefers-reduced-motion` |
 | БД / Auth / файлы | Supabase: Postgres, Auth (magic link по email), Storage, RLS |
@@ -64,6 +64,15 @@
    └─ styles/                # globals.css с токенами
 ```
 
+## Особенности Next.js 16 (важно!)
+
+Версия новее, чем данные обучения ИИ. Перед кодом сверяться с документацией в `node_modules/next/dist/docs/` (см. `AGENTS.md`).
+
+- Включён `cacheComponents`: сегментные конфиги вроде `dynamicParams`/`dynamic` несовместимы — не использовать.
+- `params`/`searchParams`/`cookies()`/`headers()` — асинхронные (`await`). Типы `PageProps<"/route">`, `LayoutProps<"/">` генерируются (`npx next typegen`).
+- `next/image`: `priority` устарел → для LCP-картинки `fetchPriority="high"` + `loading="eager"`.
+- `middleware` переименован в `proxy`.
+
 ## Дизайн-система
 
 Стиль: тёплый, почти монохромный, премиальный, много воздуха.
@@ -73,6 +82,8 @@
 - **Кнопки**: капсулы (`rounded-full`). Primary — чёрная, secondary — белая с тонкой рамкой.
 - **Карточки**: стеклянные (glassmorphism: полупрозрачный белый + `backdrop-blur` + тонкая светлая рамка), мягкие тени.
 - Все токены (цвета, шрифты, отступы, радиусы, тени) — в `globals.css` / конфиге Tailwind. **Хардкод цветов и размеров в компонентах запрещён.**
+- Базовые компоненты (`src/components/ui`): `Button` (капсула; с `href` — ссылка), `Card`, `GlassCard`, `Badge`, `IconTile` (пастельная иконка), `Input`, `Textarea`, `Select`, `Checkbox`, `Section`, `Container`, `Heading` (serif + курсив), `Accordion` (на `<details>`), `AvatarStack`, `Reveal` (анимация появления).
+- Пастельные тона направлений: `sat`, `ielts`, `ec`, `essay` (утилиты `bg-sat`, `text-sat-ink` и т.д.).
 - Страницы собираются **только** из базовых компонентов `src/components/ui`. Нужен новый вариант — расширяем компонент, а не пишем разметку с нуля.
 
 ## Правила разработки
@@ -108,15 +119,16 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=        # server-only
 ANTHROPIC_API_KEY=                # server-only
 NEXT_PUBLIC_SITE_URL=
-NEXT_PUBLIC_WHATSAPP_NUMBER=
 ```
+
+Контакты (телефон/WhatsApp, Instagram, email) — в `content/site.ts`.
 
 ## Этапы
 
 | # | Этап | Статус |
 |---|---|---|
-| 0 | CLAUDE.md, план, уточняющие вопросы | в работе |
-| 1 | Дизайн-токены, базовые компоненты, лендинг `/` | — |
+| 0 | CLAUDE.md, план, уточняющие вопросы | готово |
+| 1 | Дизайн-токены, базовые компоненты, лендинг `/` | готово, ждёт «ок» |
 | 2 | Заявки (Supabase `leads`) + `/admin` для заявок | — |
 | 3 | Бесплатные инструменты: эссе (ИИ), мини-тест SAT, калькулятор шансов | — |
 | 4 | Личный кабинет ученика `/dashboard` | — |

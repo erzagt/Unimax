@@ -14,13 +14,14 @@ type HeadingProps = {
   /** Перенос курсивной части на новую строку. */
   breakBeforeItalic?: boolean;
   as?: "h1" | "h2" | "h3";
+  id?: string;
   className?: string;
 };
 
 /** Serif-заголовок с курсивной второй частью. */
-export function Heading({ title, italic, breakBeforeItalic, as: Tag = "h2", className }: HeadingProps) {
+export function Heading({ title, italic, breakBeforeItalic, as: Tag = "h2", id, className }: HeadingProps) {
   return (
-    <Tag className={cn("font-serif font-medium tracking-[-0.02em] text-balance text-ink", className)}>
+    <Tag id={id} className={cn("font-serif font-medium tracking-[-0.02em] text-balance text-ink", className)}>
       {title}
       {italic && (
         <>
@@ -75,9 +76,7 @@ export function Section({
                   {eyebrow}
                 </p>
               )}
-              <div id={headingId}>
-                <Heading title={title} italic={italic} className="text-4xl leading-[1.05] sm:text-5xl" />
-              </div>
+              <Heading id={headingId} title={title} italic={italic} className="text-4xl leading-[1.05] sm:text-5xl" />
               {description && <p className="max-w-xl text-base leading-relaxed text-muted sm:text-lg">{description}</p>}
             </div>
             {aside}
