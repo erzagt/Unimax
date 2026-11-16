@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { Suspense } from "react";
-import { Download, LogOut, MessageCircle, Phone } from "lucide-react";
+import { Download, MessageCircle, Phone, Trash2, UserRound } from "lucide-react";
 import { sectionOptions } from "@content/lead-form";
 import { Badge, Button, Card, Container, Heading, Select, type Tone } from "@/components/ui";
 import { WhatsAppIcon } from "@/components/icons";
-import { Logo } from "@/components/layout/Logo";
-import { getAuth } from "@/lib/auth";
+import { ActionForm } from "@/components/admin/ActionForm";
+import { AdminFrame, type AdminAuth } from "@/components/admin/AdminFrame";
 import { LEAD_COLUMNS, type LeadRow } from "@/lib/leads";
 import { formatDate, formatPhone, gradeLabel, sectionLabel, sourceLabel } from "@/lib/leads-format";
 import {
@@ -18,6 +16,8 @@ import {
   type LeadStatus,
 } from "@/lib/validation/lead";
 import { LeadEditor } from "./LeadEditor";
+import { LeadAccountForm } from "./LeadAccountForm";
+import { deleteLead } from "./users/actions";
 
 export const metadata: Metadata = {
   title: "Заявки — админка UniPath",
@@ -36,87 +36,11 @@ const toOptions = (o: Record<string, string>) => Object.entries(o).map(([value, 
 
 export default function AdminPage({ searchParams }: PageProps<"/admin">) {
   return (
-    <main className="min-h-dvh pb-16">
-      <Suspense fallback={<AdminSkeleton />}>
-        <AdminGate searchParams={searchParams} />
-      </Suspense>
-    </main>
-  );
-}
-
-function AdminSkeleton() {
-  return (
-    <Container className="py-10" aria-busy="true">
-      <div className="h-10 w-48 animate-pulse rounded-full bg-line" />
-      <div className="mt-8 h-64 animate-pulse rounded-card bg-line/60" />
-    </Container>
-  );
-}
-
-function AdminHeader({ email }: { email?: string }) {
-  return (
-    <header className="border-b border-line bg-canvas/80">
-      <Container className="flex h-16 items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <Logo />
-          <Badge tone="outline">Админка</Badge>
-        </div>
-        {email && (
-          <form action="/auth/signout" method="post" className="flex items-center gap-3">
-            <span className="hidden text-sm text-muted sm:inline">{email}</span>
-            <Button type="submit" variant="ghost" size="sm" iconLeft={<LogOut className="size-4" aria-hidden="true" />}>
-              Выйти
-            </Button>
-          </form>
-        )}
-      </Container>
-    </header>
-  );
-}
-
-async function AdminGate({ searchParams }: { searchParams: PageProps<"/admin">["searchParams"] }) {
-  const auth = await getAuth("admin");
-
-  if (auth.status === "anonymous") redirect("/login?next=/admin");
-
-  if (auth.status === "unconfigured") {
-    return (
-      <>
-        <AdminHeader />
-        <Container className="py-10">
-          <Card padding="lg" className="max-w-2xl">
-            <h1 className="font-serif text-3xl text-ink">Supabase не подключён</h1>
-            <p className="mt-3 text-[15px] leading-relaxed text-muted">
-              Заполните <code>NEXT_PUBLIC_SUPABASE_URL</code>, <code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code> и{" "}
-              <code>SUPABASE_SERVICE_ROLE_KEY</code> в <code>.env.local</code> (локально) или в настройках Vercel и
-              перезапустите сайт. Инструкция — в <code>supabase/README.md</code>.
-            </p>
-          </Card>
-        </Container>
-      </>
-    );
-  }
-
-  if (auth.status === "forbidden") {
-    return (
-      <>
-        <AdminHeader email={auth.user.email} />
-        <Container className="py-10">
-          <Card padding="lg" className="max-w-2xl">
-            <h1 className="font-serif text-3xl text-ink">Нет доступа</h1>
-            <p className="mt-3 text-[15px] text-muted">У этого аккаунта нет роли администратора.</p>
-          </Card>
-        </Container>
-      </>
-    );
-  }
-
-  const filters = leadFiltersSchema.parse(await searchParams);
-  return (
-    <>
-      <AdminHeader email={auth.user.email} />
-      <LeadsView supabase={auth.supabase} filters={filters} />
-    </>
+    <AdminFrame
+      active="leads"
+      next="/admin"
+      render={async (auth) => <LeadsView supabase={auth.supabase} filters={leadFiltersSchema.parse(await searchParams)} />}
+    />
   );
 }
 
@@ -129,16 +53,16 @@ async function LeadsView({
   supabase,
   filters,
 }: {
-  supabase: Extract<Awaited<ReturnType<typeof getAuth>>, { status: "ok" }>["supabase"];
+  supabase: AdminAuth["supabase"];
   filters: LeadFilters;
 }) {
-  let query = supabase.from("leads").select(LEAD_COLUMNS).order("created_at", { ascending: false }).limit(500);
+  let query = supabase.from("leads").select(`${LEAD_COLUMNS}, profile_id`).order("created_at", { ascending: false }).limit(500);
   if (filters.status) query = query.eq("status", filters.status);
   if (filters.section) query = query.eq("section", filters.section);
   if (filters.source) query = query.eq("source", filters.source);
 
   const [{ data: leads, error }, { data: allStatuses }] = await Promise.all([
-    query.returns<LeadRow[]>(),
+    query.returns<(LeadRow & { profile_id: string | null })[]>(),
     supabase.from("leads").select("status").returns<{ status: LeadStatus }[]>(),
   ]);
 
@@ -260,6 +184,36 @@ async function LeadsView({
               </div>
               <div className="mt-5 border-t border-line pt-5">
                 <LeadEditor id={lead.id} status={lead.status} notes={lead.notes} />
+              </div>
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+                {lead.profile_id ? (
+                  <Button
+                    href={`/admin/users/${lead.profile_id}`}
+                    variant="ghost"
+                    size="sm"
+                    iconLeft={<UserRound className="size-4" aria-hidden="true" />}
+                  >
+                    Аккаунт ученика
+                  </Button>
+                ) : (
+                  <details className="group w-full rounded-2xl border border-line px-4 py-3 sm:w-auto sm:min-w-[60%] [&[open]]:w-full">
+                    <summary className="cursor-pointer list-none text-sm font-medium text-ink [&::-webkit-details-marker]:hidden">
+                      <UserRound aria-hidden="true" className="mr-2 inline size-4" />
+                      Создать аккаунт ученика
+                    </summary>
+                    <div className="mt-4">
+                      <LeadAccountForm leadId={lead.id} />
+                    </div>
+                  </details>
+                )}
+                <ActionForm
+                  action={deleteLead}
+                  fields={{ id: lead.id }}
+                  label="Удалить заявку"
+                  variant="danger"
+                  icon={<Trash2 className="size-4" aria-hidden="true" />}
+                  confirmText={`Удалить заявку «${lead.name}» навсегда?`}
+                />
               </div>
             </Card>
           </li>

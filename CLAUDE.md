@@ -143,6 +143,8 @@ NEXT_PUBLIC_SITE_URL=
 - Проверка роли — только через `getAuth()` из `src/lib/auth.ts` (страницы, server actions, route handlers).
 - Заявки создаются только сервером: `POST /api/leads` → `insertLead()` (`src/lib/leads.ts`). Инструменты этапа 3 используют тот же путь с `source`.
 - Rate limit — `rateLimit()` из `src/lib/rate-limit.ts` (Postgres-функция `rate_limit_hit`).
+- Доступ к кабинету: `profiles.access` (`free` после регистрации → `active` выдаёт админ). Блокировка: `profiles.blocked_at` + бан в Supabase Auth.
+- Действия админа над пользователями — `src/app/admin/users/actions.ts`, каждое пишет в `admin_audit_log` через `audit()`.
 - Шаблоны писем Auth — `supabase/templates/*.html`, вставляются вручную: Authentication → Emails → Templates.
 
 ## Деплой

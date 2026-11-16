@@ -4,6 +4,10 @@ import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { createClient } from "@/lib/supabase/server";
 
 export type Role = "student" | "teacher" | "admin";
+export type Access = "free" | "active";
+
+export const ROLE_LABELS: Record<Role, string> = { student: "Ученик", teacher: "Учитель", admin: "Админ" };
+export const ACCESS_LABELS: Record<Access, string> = { free: "Бесплатный", active: "Ученик (оплачен)" };
 
 export type AuthState =
   | { status: "unconfigured" }
@@ -25,15 +29,28 @@ export async function getAuth(required: Role = "admin"): Promise<AuthState> {
   } = await supabase.auth.getUser();
   if (!user) return { status: "anonymous" };
 
-  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role, blocked_at")
+    .eq("id", user.id)
+    .maybeSingle();
   const role = (profile?.role ?? "student") as Role;
+  if (profile?.blocked_at) return { status: "forbidden", user };
   if (role !== required && role !== "admin") return { status: "forbidden", user };
 
   return { status: "ok", user, role, supabase };
 }
 
-/** Текущий пользователь и его роль (любая роль) или null. */
-export async function getSession(): Promise<{ user: User; role: Role; fullName: string | null } | null> {
+export type Session = {
+  user: User;
+  role: Role;
+  access: Access;
+  blocked: boolean;
+  fullName: string | null;
+};
+
+/** Текущий пользователь, роль и доступ (любая роль) или null. */
+export async function getSession(): Promise<Session | null> {
   if (!isSupabaseConfigured()) return null;
   const supabase = await createClient();
   const {
@@ -42,10 +59,16 @@ export async function getSession(): Promise<{ user: User; role: Role; fullName: 
   if (!user) return null;
   const { data: profile } = await supabase
     .from("profiles")
-    .select("role, full_name")
+    .select("role, full_name, access, blocked_at")
     .eq("id", user.id)
     .maybeSingle();
-  return { user, role: (profile?.role ?? "student") as Role, fullName: profile?.full_name ?? null };
+  return {
+    user,
+    role: (profile?.role ?? "student") as Role,
+    access: (profile?.access ?? "free") as Access,
+    blocked: Boolean(profile?.blocked_at),
+    fullName: profile?.full_name ?? null,
+  };
 }
 
 /** Куда вести пользователя после входа, если не указано иное. */

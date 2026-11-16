@@ -2,6 +2,7 @@
 
 import { refresh } from "next/cache";
 import { getAuth } from "@/lib/auth";
+import { audit } from "@/lib/admin/audit";
 import { leadUpdateSchema } from "@/lib/validation/lead";
 
 export type UpdateLeadState = { status: "idle" | "saved" | "error"; message?: string };
@@ -27,6 +28,7 @@ export async function updateLead(_prev: UpdateLeadState, formData: FormData): Pr
     return { status: "error", message: "Не удалось сохранить" };
   }
 
+  await audit(auth.user, "lead_status", { type: "lead", id }, { status });
   refresh();
   return { status: "saved" };
 }
