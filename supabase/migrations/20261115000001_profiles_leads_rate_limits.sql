@@ -1,6 +1,10 @@
 -- =====================================================================
 -- UniPath · Этап 2: профили (роли), заявки, лимиты запросов
 -- Запуск: Supabase → SQL Editor → вставить файл целиком → Run.
+--
+-- Права на таблицы выдаются ЯВНО (GRANT) — миграция работает и при
+-- выключенной опции «Automatically expose new tables». Доступ к строкам
+-- дополнительно ограничен RLS-политиками.
 -- =====================================================================
 
 create extension if not exists pgcrypto;
@@ -20,6 +24,11 @@ create table if not exists public.profiles (
 );
 
 alter table public.profiles enable row level security;
+
+-- Права: читать (своё) и менять (только админ) — через RLS ниже.
+revoke all on public.profiles from anon, authenticated;
+grant select, update on public.profiles to authenticated;
+grant all on public.profiles to service_role;
 
 -- Проверка «текущий пользователь — админ». security definer, чтобы не
 -- зацикливаться на RLS самой таблицы profiles.
@@ -115,9 +124,11 @@ create policy leads_admin_delete on public.leads
   for delete to authenticated
   using ((select public.is_admin()));
 
--- Никаких insert-политик: anon/authenticated не могут создавать заявки напрямую.
-revoke insert on public.leads from anon, authenticated;
-revoke all on public.leads from anon;
+-- Права: anon — ничего; authenticated — только чтение/изменение/удаление
+-- (и то лишь админ, см. политики). Создаёт заявки только сервер (service role).
+revoke all on public.leads from anon, authenticated;
+grant select, update, delete on public.leads to authenticated;
+grant all on public.leads to service_role;
 
 create or replace function public.set_updated_at()
 returns trigger
@@ -147,6 +158,7 @@ create table if not exists public.rate_limits (
 
 alter table public.rate_limits enable row level security;
 revoke all on public.rate_limits from anon, authenticated;
+grant all on public.rate_limits to service_role;
 
 -- Засчитывает обращение и возвращает true, если лимит ещё не превышен.
 create or replace function public.rate_limit_hit(p_key text, p_limit integer, p_window_seconds integer)
