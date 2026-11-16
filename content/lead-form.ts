@@ -12,6 +12,6 @@ export const sectionOptions = [
   { value: "ielts", label: "IELTS" },
   { value: "ec", label: "EC — внеклассные активности" },
   { value: "essay", label: "Эссе" },
-  { value: "package", label: "Пакет / несколько направлений" },
+  { value: "package", label: "Несколько направлений" },
   { value: "unknown", label: "Пока не знаю" },
 ] as const;

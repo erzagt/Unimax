@@ -39,11 +39,6 @@ export function Footer() {
                   </li>
                 ))}
                 <li>
-                  <Link href="/#faq" className="text-[15px] text-white/85 hover:text-white">
-                    Вопросы
-                  </Link>
-                </li>
-                <li>
                   <Link href="/auth/home" prefetch={false} className="text-[15px] text-white/85 hover:text-white">
                     Личный кабинет
                   </Link>

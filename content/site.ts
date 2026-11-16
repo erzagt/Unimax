@@ -26,8 +26,8 @@ export const site = {
   nav: [
     { label: "Направления", href: "/#directions" },
     { label: "Бесплатно", href: "/#free" },
-    { label: "Пакеты", href: "/#packages" },
     { label: "Наставники", href: "/#mentors" },
+    { label: "Вопросы", href: "/#faq" },
   ],
 
   cta: { label: "Пробный урок", href: "/#apply" },

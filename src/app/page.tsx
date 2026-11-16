@@ -4,7 +4,6 @@ import { Hero } from "@/components/sections/Hero";
 import { RouteTimeline } from "@/components/sections/RouteTimeline";
 import { Directions } from "@/components/sections/Directions";
 import { FreeTools } from "@/components/sections/FreeTools";
-import { Packages } from "@/components/sections/Packages";
 import { Mentors } from "@/components/sections/Mentors";
 import { Faq } from "@/components/sections/Faq";
 import { Apply } from "@/components/sections/Apply";
@@ -24,7 +23,6 @@ export default function HomePage() {
         <RouteTimeline />
         <Directions />
         <FreeTools />
-        <Packages />
         <Mentors />
         <Faq />
         <Apply />

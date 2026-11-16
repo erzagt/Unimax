@@ -2,7 +2,7 @@ import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
 
 type CardProps = ComponentProps<"div"> & {
-  /** light — белая карточка, dark — чёрная (выделенный пакет). */
+  /** light — белая карточка, dark — чёрная (акцентная). */
   tone?: "light" | "dark";
   padding?: "sm" | "md" | "lg";
 };

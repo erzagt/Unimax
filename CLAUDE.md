@@ -34,8 +34,7 @@
 ├─ .env.example              # все переменные окружения, без значений
 ├─ content/                  # данные лендинга: курсы, пакеты, наставники, FAQ (потом → БД)
 │  ├─ site.ts                # контакты, соцсети, тексты hero
-│  ├─ courses.ts
-│  ├─ packages.ts
+│  ├─ directions.ts          # 4 направления и 8 курсов с ценами «от»
 │  ├─ mentors.ts
 │  └─ faq.ts
 ├─ public/                   # фото наставников, og-image
@@ -123,6 +122,13 @@ NEXT_PUBLIC_SITE_URL=
 ```
 
 Контакты (телефон/WhatsApp, Instagram, email) — в `content/site.ts`.
+
+## Курсы и цены (утверждено, ноябрь 2026)
+
+- 8 курсов, по 2 на направление: SAT Intensive / SAT Pro, IELTS Base / IELTS 7.0+, EC Roadmap / Project Lab, Storytelling / Essay Review. Данные — `content/directions.ts`.
+- На сайте цены показываются как «от» (нижняя граница утверждённой вилки).
+- Групповые курсы (SAT, IELTS, Storytelling) — потоки до 15–20 учеников; EC и Essay Review — индивидуально.
+- Пакетов (годовых наборов курсов) нет — убраны по решению заказчика.
 
 ## Этапы
 

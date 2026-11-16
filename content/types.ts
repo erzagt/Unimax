@@ -20,7 +20,14 @@ export type IconKey =
 export type Course = {
   id: string;
   title: string;
-  description: string;
+  /** Для кого курс */
+  audience: string;
+  /** Длительность и формат */
+  format: string;
+  /** Цена «от», ₸ */
+  price: number;
+  /** За что цена: «в месяц», «за курс», «разово», «за эссе» */
+  priceUnit: string;
 };
 
 export type Direction = {
@@ -32,7 +39,6 @@ export type Direction = {
   goal: string; // «Цель 1400+»
   description: string;
   courses: Course[];
-  priceFrom: string; // «[ЦЕНА]» — ЗАГЛУШКА
 };
 
 export type RouteStep = {
@@ -40,19 +46,6 @@ export type RouteStep = {
   period: string;
   title: string;
   points: string[];
-};
-
-export type Package = {
-  id: string;
-  name: string;
-  subtitle: string;
-  duration: string;
-  courseIds: string[];
-  features: string[];
-  price: string; // ЗАГЛУШКА
-  priceNote: string;
-  highlighted?: boolean;
-  badge?: string;
 };
 
 export type Mentor = {
