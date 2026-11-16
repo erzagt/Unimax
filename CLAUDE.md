@@ -144,6 +144,12 @@ NEXT_PUBLIC_SITE_URL=
 - Заявки создаются только сервером: `POST /api/leads` → `insertLead()` (`src/lib/leads.ts`). Инструменты этапа 3 используют тот же путь с `source`.
 - Rate limit — `rateLimit()` из `src/lib/rate-limit.ts` (Postgres-функция `rate_limit_hit`).
 
+## Деплой
+
+- Vercel, проект `unimax`, сборка из ветки `claude/elegant-johnson-ei5w5l` (сейчас основная ветка репозитория).
+- Переменные окружения задаются в Vercel → Settings → Environment Variables (см. `.env.example`).
+- После получения домена добавить `https://<домен>/auth/callback` в Supabase → Authentication → URL Configuration.
+
 ## Команды
 
 ```
