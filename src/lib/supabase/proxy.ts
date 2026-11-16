@@ -24,7 +24,17 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
-  // Важно: getClaims()/getUser() запускает обновление токена при необходимости.
-  await supabase.auth.getUser();
+  // Важно: getUser() запускает обновление токена при необходимости.
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  // Уже вошли — форма входа/регистрации не нужна, ведём в свой раздел
+  const path = request.nextUrl.pathname;
+  if (user && (path === "/login" || path === "/register")) {
+    const redirect = NextResponse.redirect(new URL("/auth/home", request.url));
+    response.cookies.getAll().forEach((c) => redirect.cookies.set(c));
+    return redirect;
+  }
   return response;
 }

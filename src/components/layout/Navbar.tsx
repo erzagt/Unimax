@@ -7,9 +7,14 @@ import { site } from "@content/site";
 import { Button, Container } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import { Logo } from "./Logo";
+import { useAccount } from "./useAccount";
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const account = useAccount();
+  const accountLink = account.signedIn
+    ? { href: "/auth/home", label: account.isAdmin ? "Админка" : "Кабинет" }
+    : { href: site.login.href, label: site.login.label };
 
   useEffect(() => {
     if (!open) return;
@@ -46,13 +51,13 @@ export function Navbar() {
 
         <div className="flex items-center gap-2">
           <Button
-            href={site.login.href}
-            variant="ghost"
+            href={accountLink.href}
+            variant={account.signedIn ? "secondary" : "ghost"}
             size="sm"
             iconLeft={<UserRound className="size-4" aria-hidden="true" />}
             className="hidden sm:inline-flex"
           >
-            {site.login.label}
+            {accountLink.label}
           </Button>
           <Button href={site.cta.href} size="sm" icon={<ArrowUpRight className="size-4" aria-hidden="true" />} className="hidden sm:inline-flex">
             {site.cta.label}
@@ -101,14 +106,14 @@ export function Navbar() {
             {site.cta.label}
           </Button>
           <Button
-            href={site.login.href}
+            href={accountLink.href}
             variant="secondary"
             onClick={() => setOpen(false)}
             className="mt-3 w-full"
             size="lg"
             iconLeft={<UserRound className="size-4" aria-hidden="true" />}
           >
-            {site.login.label}
+            {accountLink.label}
           </Button>
         </Container>
       </div>

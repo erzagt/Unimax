@@ -44,7 +44,7 @@ export function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <Link href={site.login.href} className="text-[15px] text-white/85 hover:text-white">
+                  <Link href="/auth/home" prefetch={false} className="text-[15px] text-white/85 hover:text-white">
                     Личный кабинет
                   </Link>
                 </li>
