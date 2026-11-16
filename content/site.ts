@@ -31,6 +31,7 @@ export const site = {
   ],
 
   cta: { label: "Пробный урок", href: "/#apply" },
+  login: { label: "Войти", href: "/login" },
 
   hero: {
     title: "Твой путь в топ-вуз",

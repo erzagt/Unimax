@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowUpRight, Menu, X } from "lucide-react";
+import { ArrowUpRight, Menu, UserRound, X } from "lucide-react";
 import { site } from "@content/site";
 import { Button, Container } from "@/components/ui";
 import { cn } from "@/lib/utils";
@@ -45,6 +45,15 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <Button
+            href={site.login.href}
+            variant="ghost"
+            size="sm"
+            iconLeft={<UserRound className="size-4" aria-hidden="true" />}
+            className="hidden sm:inline-flex"
+          >
+            {site.login.label}
+          </Button>
           <Button href={site.cta.href} size="sm" icon={<ArrowUpRight className="size-4" aria-hidden="true" />} className="hidden sm:inline-flex">
             {site.cta.label}
           </Button>
@@ -90,6 +99,16 @@ export function Navbar() {
             icon={<ArrowUpRight className="size-4" aria-hidden="true" />}
           >
             {site.cta.label}
+          </Button>
+          <Button
+            href={site.login.href}
+            variant="secondary"
+            onClick={() => setOpen(false)}
+            className="mt-3 w-full"
+            size="lg"
+            iconLeft={<UserRound className="size-4" aria-hidden="true" />}
+          >
+            {site.login.label}
           </Button>
         </Container>
       </div>

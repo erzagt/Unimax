@@ -7,21 +7,16 @@
 <title>Вход в UniPath</title>
 </head>
 <body style="margin:0;padding:0;background:#f5f4f0;">
-<!-- Прехедер: виден в списке писем рядом с темой -->
-<div style="display:none;max-height:0;overflow:hidden;opacity:0;">Ссылка для входа в личный кабинет UniPath. Действует один раз.</div>
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;">Код и ссылка для входа в личный кабинет UniPath.</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f5f4f0;">
   <tr>
     <td align="center" style="padding:40px 16px;">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:520px;">
-
-        <!-- Логотип -->
         <tr>
           <td align="center" style="padding:0 0 28px;font-family:Inter,'Helvetica Neue',Arial,sans-serif;font-size:22px;font-weight:700;letter-spacing:-0.5px;color:#121211;">
             UniPath<sup style="font-size:13px;font-weight:500;">°</sup>
           </td>
         </tr>
-
-        <!-- Карточка -->
         <tr>
           <td style="background:#ffffff;border:1px solid #e3e1db;border-radius:28px;padding:44px 40px 40px;">
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -35,14 +30,12 @@
                   Нажмите на кнопку, чтобы войти в UniPath. Пароль не нужен — эта ссылка и есть ваш ключ.
                 </td>
               </tr>
-
-              <!-- Кнопка-капсула -->
               <tr>
-                <td style="padding:32px 0 8px;">
+                <td style="padding:32px 0 0;">
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0">
                     <tr>
                       <td align="center" bgcolor="#121211" style="border-radius:999px;">
-                        <a href="{{ .ConfirmationURL }}" target="_blank"
+                        <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&amp;type=email" target="_blank"
                            style="display:inline-block;padding:16px 32px;font-family:Inter,'Helvetica Neue',Arial,sans-serif;font-size:16px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:999px;">
                           Войти в кабинет&nbsp;&nbsp;→
                         </a>
@@ -51,26 +44,33 @@
                   </table>
                 </td>
               </tr>
-
               <tr>
-                <td style="padding:24px 0 28px;font-family:Inter,'Helvetica Neue',Arial,sans-serif;font-size:13px;line-height:1.6;color:#5c5b57;">
-                  Ссылка работает <strong style="color:#121211;">один раз</strong> и действует ограниченное время.
-                  Если вы не запрашивали вход — просто проигнорируйте это письмо.
+                <td style="padding:32px 0 0;font-family:Inter,'Helvetica Neue',Arial,sans-serif;font-size:13px;line-height:1.6;color:#5c5b57;">
+                  Или введите код на странице входа:
                 </td>
               </tr>
-
-              <!-- Запасная ссылка -->
               <tr>
-                <td style="padding:20px 0 0;border-top:1px solid #e3e1db;font-family:Inter,'Helvetica Neue',Arial,sans-serif;font-size:12px;line-height:1.6;color:#8a8984;">
-                  Кнопка не работает? Скопируйте ссылку в браузер:<br>
-                  <a href="{{ .ConfirmationURL }}" style="color:#5c5b57;word-break:break-all;">{{ .ConfirmationURL }}</a>
+                <td style="padding:10px 0 0;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td style="background:#f5f4f0;border:1px solid #e3e1db;border-radius:16px;padding:14px 22px;font-family:Inter,'Helvetica Neue',Arial,sans-serif;font-size:30px;font-weight:700;letter-spacing:8px;color:#121211;">
+                        {{ .Token }}
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:28px 0 0;border-top:0;font-family:Inter,'Helvetica Neue',Arial,sans-serif;font-size:13px;line-height:1.6;color:#5c5b57;">
+                  <div style="border-top:1px solid #e3e1db;padding-top:20px;">
+                    Код и кнопка работают <strong style="color:#121211;">один раз</strong> и действуют ограниченное время.
+                    Если это были не вы — просто проигнорируйте это письмо.
+                  </div>
                 </td>
               </tr>
             </table>
           </td>
         </tr>
-
-        <!-- Направления: пастельные метки, как на сайте -->
         <tr>
           <td align="center" style="padding:28px 0 0;">
             <table role="presentation" cellpadding="0" cellspacing="0" border="0">
@@ -83,14 +83,11 @@
             </table>
           </td>
         </tr>
-
-        <!-- Подпись -->
         <tr>
           <td align="center" style="padding:18px 0 0;font-family:Inter,'Helvetica Neue',Arial,sans-serif;font-size:13px;line-height:1.6;color:#8a8984;">
             <span style="color:#121211;font-size:14px;">✦</span>&nbsp; Поступление без паники.
           </td>
         </tr>
-
       </table>
     </td>
   </tr>
