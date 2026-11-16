@@ -130,7 +130,7 @@ NEXT_PUBLIC_SITE_URL=
 |---|---|---|
 | 0 | CLAUDE.md, план, уточняющие вопросы | готово |
 | 1 | Дизайн-токены, базовые компоненты, лендинг `/` | готово |
-| 2 | Заявки (Supabase `leads`) + `/admin` для заявок | в работе: код готов, ждём проект Supabase |
+| 2 | Заявки (Supabase `leads`) + `/admin` для заявок | готово, проверено на проде, ждёт «ок» |
 | 3 | Бесплатные инструменты: эссе (ИИ), мини-тест SAT, калькулятор шансов | — |
 | 4 | Личный кабинет ученика `/dashboard` | — |
 | 5 | Панели учителя и админа, отчёт для родителя | — |
@@ -143,9 +143,11 @@ NEXT_PUBLIC_SITE_URL=
 - Проверка роли — только через `getAuth()` из `src/lib/auth.ts` (страницы, server actions, route handlers).
 - Заявки создаются только сервером: `POST /api/leads` → `insertLead()` (`src/lib/leads.ts`). Инструменты этапа 3 используют тот же путь с `source`.
 - Rate limit — `rateLimit()` из `src/lib/rate-limit.ts` (Postgres-функция `rate_limit_hit`).
+- Шаблоны писем Auth — `supabase/templates/*.html`, вставляются вручную: Authentication → Emails → Templates.
 
 ## Деплой
 
+- Прод: https://unimax-fawn.vercel.app
 - Vercel, проект `unimax`, сборка из ветки `claude/elegant-johnson-ei5w5l` (сейчас основная ветка репозитория).
 - Переменные окружения задаются в Vercel → Settings → Environment Variables (см. `.env.example`).
 - После получения домена добавить `https://<домен>/auth/callback` в Supabase → Authentication → URL Configuration.
