@@ -20,7 +20,6 @@ export const site = {
     instagramHref: null as string | null, // например "https://instagram.com/unipath"
     email: "[ЗАГЛУШКА: email]",
     emailHref: null as string | null, // например "mailto:hello@unipath.kz"
-    city: "[ЗАГЛУШКА: город]",
   },
 
   nav: [

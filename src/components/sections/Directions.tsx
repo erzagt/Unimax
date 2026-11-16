@@ -58,7 +58,7 @@ export function Directions() {
 
       <p className="mt-8 flex items-center justify-center gap-2 text-center text-sm text-muted">
         <Users aria-hidden="true" className="size-4 shrink-0" />
-        SAT, IELTS и Storytelling — в потоках до 15–20 учеников. EC Roadmap, Project Lab и Essay Review — индивидуально с наставником.
+        Все занятия онлайн. SAT, IELTS и Storytelling — в потоках до 15–20 учеников; EC Roadmap, Project Lab и Essay Review — индивидуально с наставником.
       </p>
     </Section>
   );

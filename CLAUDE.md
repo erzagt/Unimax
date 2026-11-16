@@ -127,7 +127,7 @@ NEXT_PUBLIC_SITE_URL=
 
 - 8 курсов, по 2 на направление: SAT Intensive / SAT Pro, IELTS Base / IELTS 7.0+, EC Roadmap / Project Lab, Storytelling / Essay Review. Данные — `content/directions.ts`.
 - На сайте цены показываются как «от» (нижняя граница утверждённой вилки).
-- Групповые курсы (SAT, IELTS, Storytelling) — потоки до 15–20 учеников; EC и Essay Review — индивидуально.
+- Формат: **только онлайн**. Групповые курсы (SAT, IELTS, Storytelling) — потоки до 15–20 учеников; EC и Essay Review — индивидуально.
 - Пакетов (годовых наборов курсов) нет — убраны по решению заказчика.
 
 ## Этапы
